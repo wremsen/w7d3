@@ -7,9 +7,9 @@ class UsersController < ApplicationController
     def create
         @user= User.new(user_params)
          if @user.save 
-             redirect_to user_url # redirect to page
+             redirect_to user_url(@user) # redirect to page
          else
-             render json: errors.full_messages, status: 422
+             render json: @user.errors.full_messages, status: 422
          end
      end
  
