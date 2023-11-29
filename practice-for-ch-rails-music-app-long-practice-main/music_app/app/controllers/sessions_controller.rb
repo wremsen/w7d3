@@ -1,6 +1,9 @@
 class SessionsController < ApplicationController
 
+    before_action :require_logged_out, only: [:new, :create]
+    before_action :require_logged_in, only: [:destroy]
 
+    helper_method :logged_in?, :current_user
     def create
         email = params[:user][:email]
         password = params[:user][:password]

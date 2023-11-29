@@ -9,7 +9,7 @@
 
 
 class ApplicationController < ActionController::Base
-    helper_method :current_user
+    helper_method :current_user, :logged_in?
 
     skip_before_action :verify_authenticity_token
 
@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
         @current_user ||= User.find_by(session_token: session[:session_token])
     end
 
-    def logged_in
+    def logged_in?
         !!current_user
     end
 
@@ -33,6 +33,11 @@ class ApplicationController < ActionController::Base
         redirect_to user_url if logged_in?
     end
 
+    def logout!
+        current_user.reset_session_token! if logged_in?
+        session[:session_token] = nil
+        @current_user = nil
+    end
 
 
 end
