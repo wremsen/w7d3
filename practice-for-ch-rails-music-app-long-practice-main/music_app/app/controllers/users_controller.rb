@@ -3,7 +3,10 @@ class UsersController < ApplicationController
     before_action :require_logged_out, only: [:new, :create]
     before_action :require_logged_in, only: [:show]
 
-
+    def index
+        @users = User.all
+        render :index
+    end
 
     def new
         @user = User.new
@@ -13,9 +16,11 @@ class UsersController < ApplicationController
     def create
         @user= User.new(user_params)
          if @user.save 
-             redirect_to user_url(@user) # redirect to page
+            login!(@user)
+            redirect_to user_url(@user) # redirect to page
          else
-             render json: @user.errors.full_messages, status: 422
+            flash.now[:errors] = @user.errors.full_messages
+            render :new
          end
      end
 

@@ -11,7 +11,7 @@
 class ApplicationController < ActionController::Base
     helper_method :current_user, :logged_in?
 
-    skip_before_action :verify_authenticity_token
+    # skip_before_action :verify_authenticity_token
 
     def current_user
         @current_user ||= User.find_by(session_token: session[:session_token])
@@ -22,15 +22,15 @@ class ApplicationController < ActionController::Base
     end
 
     def login!(user)
-        session[:session_token] = user.reset_session_token!
+        session[:session_token] = user.reset_session_token! # reset and save a new session token to cookie at this stage to prevent data breach
     end
 
     def require_logged_in
-        redirect_to new_session_url unless logged_in?
+        redirect_to session_url unless logged_in?
     end
 
     def require_logged_out
-        redirect_to user_url if logged_in?
+        redirect_to users_url if logged_in? # user singular would need an "id" put in
     end
 
     def logout!
@@ -39,5 +39,6 @@ class ApplicationController < ActionController::Base
         @current_user = nil
     end
 
+    
 
 end
